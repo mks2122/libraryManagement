@@ -1,3 +1,12 @@
+CREATE TABLE IF NOT EXISTS books (
+    id VARCHAR(25) NOT NULL PRIMARY KEY UNIQUE,
+    bname VARCHAR(255) NOT NULL,
+    author VARCHAR(100) NOT NULL,
+    lent BOOLEAN DEFAULT FALSE,
+    genre VARCHAR(25) NOT NULL,
+    cno INT NOT NULL
+);
+CREATE INDEX idx_books_id_cno ON books (id, cno);
 
 CREATE TABLE user (
     uid INT NOT NULL,
