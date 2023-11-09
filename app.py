@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 
-app = Flask(__name__, template_folder="./", static_folder="./static")
+app = Flask(__name__, template_folder="./template", static_folder="./static")
 
 users = [
     {'username': 'user1', 'password': 'password1'},
@@ -9,6 +9,10 @@ users = [
 
 @app.route('/')
 def index():
+    return render_template('./index.html')
+
+@app.route('/log.html')
+def loginPage():
     return render_template('./log.html')
 
 @app.route('/login', methods=['POST'])
@@ -24,11 +28,14 @@ def login():
             break
 
     if user_found:
-        message = "Login successful"
+        return redirect(url_for('index'))
     else:
         message = "Invalid username or password"
+        return render_template('log.html', message=message)
 
-    return render_template('log.html', message=message)
+@app.route('/inOut.html')
+def inOut():
+    return render_template('./inOut.html')
 
 
 if __name__ == '__main__':
