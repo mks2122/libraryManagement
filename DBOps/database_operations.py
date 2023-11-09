@@ -4,7 +4,7 @@ def lend_book(user_id,book_id):
     connection = sql.connect(
         host="localhost",
         user='root',
-        password='Govind@1950',
+        password='mkpmksMM@123',
         db='library'
     )
     cursor = connection.cursor()
@@ -35,7 +35,7 @@ def return_book(user_id,book_id,copy_number):
     connection = connection = sql.connect(
         host="localhost",
         user='root',
-        password='Govind@1950',
+        password='mkpmksMM@123',
         db='library'
     )
     cursor = connection.cursor()

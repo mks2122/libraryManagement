@@ -26,12 +26,13 @@ def login():
         if user['username'] == username and user['password'] == password:
             user_found = True
             break
-
-    if user_found:
-        return redirect(url_for('index'))
-    else:
+    
+    if not user_found:
         message = "Invalid username or password"
         return render_template('log.html', message=message)
+    # return redirect('/')
+    return render_template("index.html", button_visibility=True)
+
 
 @app.route('/inOut.html')
 def inOut():
