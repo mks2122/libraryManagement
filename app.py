@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
 
+global user_found
 app = Flask(__name__, template_folder="./template", static_folder="./static")
 
 users = [
@@ -16,7 +17,6 @@ def index():
 def loginPage():
     return render_template('./log.html')
 
-global user_found
 @app.route('/login', methods=['POST'])
 def login():
     username = request.form['username']
@@ -53,18 +53,18 @@ def bookdetails():
     return render_template('./bookdetails.html',data=results[1:])
 @app.route('/details.html')
 def details():
-    if user_found:
+    # if user_found:
         con=sqlite3.connect('library.db')
         cursor=con.cursor()
         cursor.execute("SELECT * FROM currentDetails")
         
         results = cursor.fetchall()
         con.close()
-        # print(results)
+        print(results)
 
         return render_template('./details.html',data=results)
-    else:
-        return redirect('/log.html')
+    # else:
+    #     return redirect('/log.html')
 
 # con.close()
 if __name__ == '__main__':
