@@ -6,7 +6,11 @@ CREATE TABLE IF NOT EXISTS books (
     genre VARCHAR(255) NOT NULL
 );
 
-SELECT * FROM books;
+
+
+
+
+
 
 
 CREATE TABLE user (
@@ -18,6 +22,7 @@ CREATE TABLE user (
 );
 
 
+DROP TABLE books;
 
 CREATE TABLE drem (
     bkid VARCHAR(25) NOT NULL,
@@ -38,8 +43,7 @@ CREATE TABLE IF NOT EXISTS student (
     name VARCHAR(255) NOT NULL
 );
 
-SELECT * FROM student WHERE roll="22AM112";
-
+drop table books;
 INSERT INTO user (uid, uname, dname, bookid)
 VALUES (
     "22AM112",
@@ -70,4 +74,6 @@ SELECT * FROM user INNER JOIN books ON user.bookid=books.id WHERE user.uid="22AM
 #
 # DROP TABLE temp_books;
 #
-SELECT * FROM books;
+SELECT COUNT(*) FROM books;
+
+
