@@ -1,54 +1,73 @@
+import datetime
 import pymysql as sql
 
-def lend_book(user_id,book_id):
+def lend_books(book_id,user_id):
+    """
+    :param book_id:
+    :param user_id:
+    :return: None
+    This function takes in a user_ID and a particular Book_ID and lends the books to the user
+    """
     connection = sql.connect(
         host="localhost",
         user='root',
-        password='mkpmksMM@123',
+        password='Govind@1950',
         db='library'
     )
-    cursor = connection.cursor()
     try:
-        # The book has a column called lent which has a boolean value, so we are setting it to True for the
-        # specific combination of book_id and copy_number
-        cursor.execute(f"UPDATE books SET lent = True WHERE id = {book_id}")
-        # We are also adding the user to the user table where his user_id, name, department_name, book_id,
-        # copy_number are stored
-        # We are getting the username from the student table where the user_id is stored
-        cursor.execute(f"SELECT name FROM student WHERE roll = {user_id}")
-        username = cursor.fetchone()[0]
-        # We are adding the user to thjs user table
-        # the department name is represented by the 3rd and 4th character of the user_id in the student table
-        # so we are extracting that from the user_id
-        department_name = user_id[2:4]
-        cursor.execute(f"INSERT INTO user VALUES({user_id},'{username}',{department_name},{book_id})")
-        # We are updating thedrem table which stores the due reminer
-        # We are setting the due date to 15 days from the current date
-        cursor.execute(f"INSERT INTO drem VALUES({book_id},{user_id},CURRENT_DATE(),DATE_ADD(CURDATE(), INTERVAL 15 DAY),0)")
-        connection.commit()
-    except Exception as e:
-        print(f"Error: {e}")
+        cursor = connection.cursor()
+        cursor.execute(f"SELECT bname FROM books WHERE id={book_id}")
+        book_name = cursor.fetchone()[0]
+
+        # Writing into the user table
+        cursor.execute(f"SELECT name FROM student WHERE roll='{user_id}'")
+        user_name = cursor.fetchone()[0]
+
+        # Updating the lent column of books table
+        cursor.execute(f"UPDATE books SET lent={True} WHERE id={book_id}")
+
+        # Updating the user table
+        cursor.execute(f"INSERT INTO library.user (uid, uname, dname, bookid) VALUES('{user_id}', '{user_name}', '{user_id[2:4]}', '{book_id}')")
+
+        # Updating the drem table
+        # Get the current date
+        today = datetime.datetime.today()
+        # Calculate the due date for the book
+        due_date = today + datetime.timedelta(days=21)
+        cursor.execute(f"INSERT INTO library.drem (bkid, userid, rented, due, ext) VALUES('{book_id}', '{user_id}', '{today}', '{due_date}',0)")
+        print("Succesfully Updated")
     finally:
+        connection.commit()
         connection.close()
 
-def return_book(user_id,book_id,copy_number):
-    connection = connection = sql.connect(
+
+def return_book(book_id,user_id):
+    """
+    This function helps the user return a book back to the library.
+    :param book_id:
+    :param user_id:
+    :return: None
+    """
+    connection = sql.connect(
         host="localhost",
         user='root',
-        password='mkpmksMM@123',
+        password='Govind@1950',
         db='library'
     )
-    cursor = connection.cursor()
-    try:
-        # We are setting the lent column of the book to False
-        cursor.execute(f"UPDATE books SET lent = False WHERE id = {book_id} AND cno = {copy_number}")
-        # We are deleting the user from the user table
-        cursor.execute(f"DELETE FROM user WHERE uid = {user_id} AND bookid = {book_id} AND bcno = {copy_number}")
-        # We are deleting the user from the drem table
-        cursor.execute(f"DELETE FROM drem WHERE userid = {user_id} AND bkid = {book_id}")
 
-        connection.commit()
-    except Exception as e:
-        print(f"Error: {e}")
+    # Updating the drem table
+    try:
+        cursor = connection.cursor()
+        cursor.execute(f"DELETE FROM library.drem WHERE bkid='{book_id}' AND userid='{user_id}'")
+
+        #Deleting from the user table
+        cursor.execute(f"DELETE FROM library.user WHERE uid='{user_id}' AND bookid='{book_id}'")
     finally:
+        connection.commit()
         connection.close()
+
+
+
+lend_books("0060887966",'22AM112')
+
+
