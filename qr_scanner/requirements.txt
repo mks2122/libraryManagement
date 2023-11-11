@@ -1,0 +1,4 @@
+gradio
+pyzbar
+opencv-python
+numpy
