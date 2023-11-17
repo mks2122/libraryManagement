@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
-
+from qr_scanner import cam
 global user_found
 app = Flask(__name__, template_folder="./template", static_folder="./static")
 
@@ -51,6 +51,11 @@ def bookdetails():
     # print(results)
 
     return render_template('./bookdetails.html',data=results[1:])
+@app.route('/cvin')
+def cvin():
+    isbn = cam.cameraIsbn()
+    return isbn
+
 @app.route('/details.html')
 def details():
     # if user_found:
