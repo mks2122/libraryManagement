@@ -1,4 +1,4 @@
-import gradio as gr
+# import gradio as gr
 import cv2
 from pyzbar.pyzbar import decode
 import numpy as np
