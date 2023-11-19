@@ -2,16 +2,6 @@ import pandas as pd
 import pymysql as sql
 
 df = pd.read_csv("../../data/2nd Year Database.csv")
-for i in data:
-    try:
-        cursor.execute("INSERT INTO student(ROLL, NAME) VALUES(%s, %s)",(i[0],i[1]))
-        connection.commit()
-    except sql.IntegrityError as e:
-        passdf = pd.read_csv("../../data/2nd Year Database.csv")
-
-#Converting all names in NAME column to upper case
-df['NAME'] = df['NAME'].str.upper()
-
 data = df[["ROLL NO","NAME"]].values.tolist()
 
 connection = sql.connect(
@@ -27,6 +17,10 @@ for i in data:
         connection.commit()
     except sql.IntegrityError as e:
         pass
+
+#Converting all names in NAME column to upper case
+df['NAME'] = df['NAME'].str.upper()
+
 
 bdf = pd.read_csv("../../data/2nd Year Database B.csv")
 bdf['NAME'] = df['NAME'].str.upper()
