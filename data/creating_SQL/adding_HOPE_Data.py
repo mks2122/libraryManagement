@@ -22,4 +22,4 @@ cursor = connection.cursor()
 
 for i in data:
     cursor.execute("INSERT INTO student(ROLL, NAME) VALUES(%s, %s)",(i[0],i[1]))
-    connection.commit()
+    connection.commit()git filter-repo --path "*.csv" --prune-empty --tag-name-filter cat -- --all
