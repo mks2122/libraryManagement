@@ -11,11 +11,12 @@ def lend_books(book_id,user_id):
     connection = sql.connect(
         host="localhost",
         user='root',
-        password='Govind@1950',
+        password='Kausik@2204',
         db='library'
     )
     try:
         cursor = connection.cursor()
+        # (Name,ID)
         cursor.execute(f"SELECT bname FROM books WHERE id={book_id}")
         book_name = cursor.fetchone()[0]
 
@@ -62,12 +63,17 @@ def return_book(book_id,user_id):
 
         #Deleting from the user table
         cursor.execute(f"DELETE FROM library.user WHERE uid='{user_id}' AND bookid='{book_id}'")
+
+        # Updating the books table
+        cursor.execute(f"UPDATE library.books WHERE id='{book_id}' SET lent={False}")
+
+        print("Succesfully Updated")
     finally:
         connection.commit()
         connection.close()
 
 
 
-lend_books("0060887966",'22AM112')
+return_book("0060887966",'22AM112')
 
 

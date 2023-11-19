@@ -22,7 +22,6 @@ CREATE TABLE user (
 );
 
 
-DROP TABLE books;
 
 CREATE TABLE drem (
     bkid VARCHAR(25) NOT NULL,
@@ -43,37 +42,6 @@ CREATE TABLE IF NOT EXISTS student (
     name VARCHAR(255) NOT NULL
 );
 
-drop table books;
-INSERT INTO user (uid, uname, dname, bookid)
-VALUES (
-    "22AM112",
-        (SELECT name FROM student WHERE roll="22AM112"),
-        "AML",
-        (SELECT id FROM books WHERE bname="The Alchemist" ORDER BY id DESC LIMIT 1)
-       );
-
-SELECT * FROM user INNER JOIN books ON user.bookid=books.id WHERE user.uid="22AM112";
-# deleting the duplicate entries
-# CREATE TABLE temp_books (
-#     bname VARCHAR(255) NOT NULL,
-#     PRIMARY KEY (bname)
-# );
-#
-# INSERT INTO temp_books (bname)
-# SELECT bname
-# FROM books
-# GROUP BY bname
-# HAVING COUNT(*) > 1;
-#
-#
-# DELETE FROM books
-# WHERE bname IN (
-#     SELECT bname
-#     FROM temp_books
-# );
-#
-# DROP TABLE temp_books;
-#
-SELECT COUNT(*) FROM books;
+SELECT * FROM student;
 
 
