@@ -1,0 +1,31 @@
+<!-- <!DOCTYPE html>
+    <head><title>card reader</title></head>
+
+</html> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="/static/portalStyle.css">
+  <title>Namelist Table</title>
+</head>
+<body>
+    <a href="/" class="login-link-button" id="my-button" style="position: absolute; top: 10px; right: 10px; margin-right: 50px; text-decoration:none ">Home </a>
+
+    <div class="main-login-form">
+        <h4 id="status">
+            Place the card on the reader
+            </h4>
+    </div>
+
+    <script>
+        // Function to change the text after 6 seconds
+        setTimeout(function() {
+            var statusElement = document.getElementById("status");
+            if (statusElement) {
+                statusElement.textContent = "Book is successfully returned";
+            }
+        }, 6000); // 6000 milliseconds = 6 seconds
+    </script>
+</body>
+</html>

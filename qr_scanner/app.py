@@ -3,7 +3,8 @@ import cv2
 from pyzbar.pyzbar import decode
 import numpy as np
 from PIL import Image
-
+global c
+c=0
 def qr_barcode_scanner(image, box_coords=None):
     # Convert PIL image to numpy array
     image_data = np.array(image)
@@ -24,6 +25,8 @@ def qr_barcode_scanner(image, box_coords=None):
         return "No QR code or barcode found."
 
     results = []
+    if c==200:
+        return "abce"
     for obj in decoded_objects:
         data = obj.data.decode("utf-8")
         results.append(f"Type: {obj.type}, Data: {data}")
@@ -36,6 +39,8 @@ cap = cv2.VideoCapture(0)
 if not cap.isOpened():
     print("Error: Could not open camera.")
     exit()
+
+cv2.namedWindow("Camera Feed", cv2.WINDOW_NORMAL)
 
 # Infinite loop to capture frames
 while True:
@@ -56,6 +61,8 @@ while True:
     cv2.putText(frame, "Place the barcode inside the box", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
     # Display the frame
     cv2.imshow("Camera Feed", frame)
+    cv2.setWindowProperty("Camera Feed", cv2.WND_PROP_TOPMOST, 1)
+
 
     # Break the loop if the 'q' key is pressed
     if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -64,12 +71,16 @@ while True:
     # Perform QR code/barcode scanning only within the defined box
     a = qr_barcode_scanner(frame, box_coords=(box_x, box_y, box_w, box_h))
 
-
-    if a != "No QR code or barcode found.":
+    
+    if c==200:
+        print("return")
+    elif a != "No QR code or barcode found.":
         print(a)
         break
+        c+=1
     else:
         print(a)
+        c+=1
 
 # Release the camera and destroy all windows    
 cap.release()

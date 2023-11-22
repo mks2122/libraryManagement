@@ -6,8 +6,7 @@ app = Flask(__name__, template_folder="./template", static_folder="./static")
 
 users = [
     {'username': 'user1', 'password': 'password1'},
-    {'username': 'user2', 'password': 'password2'}
-]
+    {'username': 'user2', 'password': 'password2'}]
 
 @app.route('/')
 def index():
@@ -53,8 +52,11 @@ def bookdetails():
     return render_template('./bookdetails.html',data=results[1:])
 @app.route('/cvin')
 def cvin():
+    c=0
     isbn = cam.cameraIsbn()
-    return isbn
+    # while cam.cameraIsbn():
+        
+    return render_template("./card.html")
 
 @app.route('/details.html')
 def details():
