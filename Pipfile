@@ -1,0 +1,21 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pandas = "*"
+numpy = "*"
+matplotlib = "*"
+seaborn = "*"
+flask = "*"
+opencv-python = "*"
+
+[packages]
+opencv-python = "*"
+flask = "*"
+gradio = "*"
+pyzbar = "*"
+
+[requires]
+python_version = "3.10.*"
