@@ -1,8 +1,9 @@
 import pandas as pd
 import pymysql as sql
 
-df = pd.read_csv("../../data/2nd Year Database.csv")
-data = df[["ROLL NO","NAME"]].values.tolist()
+df = pd.read_csv("../AML A Database.csv")
+df2 = pd.read_csv("../AML B Database.csv")
+data = df[["ROLL NO","NAME","EMAIL ID"]].values.tolist()
 
 connection = sql.connect(
     host="localhost",
