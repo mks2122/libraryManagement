@@ -8,6 +8,7 @@ def lend_books(book_id,user_id):
     :return: None
     This function takes in a user_ID and a particular Book_ID and lends the books to the user
     """
+    global connection
     try:
         connection = sql.connect("../library.db")
         cursor = connection.cursor()
@@ -59,19 +60,25 @@ def return_book(book_id,user_id):
     :param book_id:
     :param user_id:
     :return: None
+    This functionality helps the user return the book which they had lent.
     """
-    connection = sql.connect("../library.db")
+    global connection
 
     # Updating the drem table
     try:
+        connection = sql.connect("../library.db")
         cursor = connection.cursor()
-        cursor.execute(f"DELETE FROM library.drem WHERE bkid='{book_id}' AND userid='{user_id}'")
+        cursor.execute(f"DELETE FROM drem WHERE bkid='{book_id}' AND userid='{user_id}'")
 
         #Deleting from the user table
-        cursor.execute(f"DELETE FROM library.user WHERE uid='{user_id}' AND bookid='{book_id}'")
+        cursor.execute(f"DELETE FROM user WHERE uid='{user_id}' AND bookid='{book_id}'")
 
         # Updating the books table
-        cursor.execute(f"UPDATE library.books WHERE id='{book_id}' SET lent={False}")
+        # cursor.execute(f"UPDATE books WHERE id={book_id} SET lent={0}")
+        cursor.execute(f"UPDATE books SET lent={0} WHERE id={book_id}")
+
+        # Updating the count column of books table
+        cursor.execute(f"UPDATE books SET count = count+1 WHERE id={book_id}")
 
         print("Succesfully Updated")
     finally:
@@ -154,4 +161,4 @@ def fetch_lent_books():
         connection.close()
 
 
-lend_books("9780439682589",'22AM112')
+return_book("9780439682589",'22AM112')
