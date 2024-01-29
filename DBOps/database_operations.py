@@ -1,5 +1,5 @@
 import datetime
-import pymysql as sql
+import sqlite3 as sql
 
 def lend_books(book_id,user_id):
     """
@@ -8,35 +8,46 @@ def lend_books(book_id,user_id):
     :return: None
     This function takes in a user_ID and a particular Book_ID and lends the books to the user
     """
-    connection = sql.connect(
-        host="localhost",
-        user='root',
-        password='Kausik@2204',
-        db='library'
-    )
     try:
+        connection = sql.connect("../library.db")
         cursor = connection.cursor()
         # (Name,ID)
         cursor.execute(f"SELECT bname FROM books WHERE id={book_id}")
         book_name = cursor.fetchone()[0]
+        if book_name is None:
+            raise Exception("Book not found!")
+
+        print(f"Book Name: {book_name}")
 
         # Writing into the user table
         cursor.execute(f"SELECT name FROM student WHERE roll='{user_id}'")
         user_name = cursor.fetchone()[0]
 
+        if user_name is None:
+            raise Exception("User not found!")
+
+        print(f"User Name: {user_name}")
+
         # Updating the lent column of books table
-        cursor.execute(f"UPDATE books SET lent={True} WHERE id={book_id}")
+        cursor.execute(f"UPDATE books SET lent={1} WHERE id={book_id}")
+
+        # Updating the count column of books table
+        cursor.execute(f"UPDATE books SET count = count-1 WHERE id={book_id}")
 
         # Updating the user table
-        cursor.execute(f"INSERT INTO library.user (uid, uname, dname, bookid) VALUES('{user_id}', '{user_name}', '{user_id[2:4]}', '{book_id}')")
+        cursor.execute(f"INSERT INTO user (uid, uname, dname, bookid) "
+                       f"VALUES('{user_id}', '{user_name}', '{user_id[2:4]}', '{book_id}')")
 
         # Updating the drem table
         # Get the current date
         today = datetime.datetime.today()
         # Calculate the due date for the book
         due_date = today + datetime.timedelta(days=21)
-        cursor.execute(f"INSERT INTO library.drem (bkid, userid, rented, due, ext) VALUES('{book_id}', '{user_id}', '{today}', '{due_date}',0)")
+        cursor.execute(f"INSERT INTO drem (bkid, userid, rented, due, ext) "
+                       f"VALUES('{book_id}', '{user_id}', '{today}', '{due_date}',0)")
         print("Succesfully Updated")
+    # except Exception as e:
+    #     print(f"An error {e} occurred!")
     finally:
         connection.commit()
         connection.close()
@@ -49,12 +60,7 @@ def return_book(book_id,user_id):
     :param user_id:
     :return: None
     """
-    connection = sql.connect(
-        host="localhost",
-        user='root',
-        password='Govind@1950',
-        db='library'
-    )
+    connection = sql.connect("../library.db")
 
     # Updating the drem table
     try:
@@ -83,14 +89,9 @@ def fetch_all_books():
     :return: list of all books
     """
     global books
-    connection = sql.connect(
-        host='localhost',
-        user='root',
-        password='Kausik@2204',
-        db='library'
-    )
-    cursor = connection.cursor()
     try:
+        connection = sql.connect("../library.db")
+        cursor = connection.cursor()
         cursor.execute("SELECT * FROM books WHERE lent=0")
         books = cursor.fetchall()
     except Exception as e:
@@ -104,12 +105,8 @@ def fetch_availablity_of_book(identifier, by_name=True):
     :param by_name: If True, search by book name; if False, search by book ID.
     :return: Book information if found, None otherwise.
     """
-    connection = sql.connect(
-        host='localhost',
-        user='root',
-        password='Kausik@2204',
-        db='library'
-    )
+    connection = sql.connect("../library.db")
+
     cursor = connection.cursor()
 
     try:
@@ -118,11 +115,13 @@ def fetch_availablity_of_book(identifier, by_name=True):
         else:
             cursor.execute(f"SELECT * FROM books WHERE id='{identifier}'")
 
-        book = cursor.fetchone()
+        book = cursor.fetchone()[0]
         return book
 
     except Exception as e:
         print(e)
+
+
     finally:
         connection.close()
 def fetch_lent_books():
@@ -131,15 +130,10 @@ def fetch_lent_books():
     the user information, date lent, date of return, and number of reminders.
     :return: list of lent books with details
     """
-    connection = pymysql.connect(
-        host='localhost',
-        user='root',
-        password='Kausik@2204',
-        db='library'
-    )
-    cursor = connection.cursor(pymysql.cursors.DictCursor)  # Using DictCursor for a dictionary-like result
 
     try:
+        connection = sql.connect("../library.db")
+        cursor = connection.cursor()
         # Using INNER JOIN to combine information from the 'books', 'user', and 'drem' tables
         query = """
         SELECT books.id AS book_id, books.bname AS book_name, books.genre,
@@ -159,5 +153,5 @@ def fetch_lent_books():
     finally:
         connection.close()
 
-print(fetch_availablity_of_book("The Prophet",by_name=True))
-lend_books("0060887966",'22AM112')
+
+lend_books("9780439682589",'22AM112')
