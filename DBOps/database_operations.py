@@ -96,6 +96,7 @@ def fetch_all_books():
     :return: list of all books
     """
     global books
+    global connection
     try:
         connection = sql.connect("../library.db")
         cursor = connection.cursor()
@@ -104,6 +105,7 @@ def fetch_all_books():
     except Exception as e:
         print(e)
     finally:
+        connection.close()
         return books
 def fetch_availablity_of_book(identifier, by_name=True):
     """
@@ -112,18 +114,21 @@ def fetch_availablity_of_book(identifier, by_name=True):
     :param by_name: If True, search by book name; if False, search by book ID.
     :return: Book information if found, None otherwise.
     """
-    connection = sql.connect("../library.db")
-
-    cursor = connection.cursor()
-
+    global connection
     try:
+        connection = sql.connect("../library.db")
+        cursor = connection.cursor()
+
         if by_name:
             cursor.execute(f"SELECT * FROM books WHERE bname='{identifier}'")
         else:
             cursor.execute(f"SELECT * FROM books WHERE id='{identifier}'")
 
         book = cursor.fetchone()[0]
-        return book
+        if book:
+            return book
+        else:
+            return "Book not found!"
 
     except Exception as e:
         print(e)
@@ -137,7 +142,7 @@ def fetch_lent_books():
     the user information, date lent, date of return, and number of reminders.
     :return: list of lent books with details
     """
-
+    global connection
     try:
         connection = sql.connect("../library.db")
         cursor = connection.cursor()
@@ -152,13 +157,13 @@ def fetch_lent_books():
             WHERE books.lent = 1"""
         cursor.execute(query)
         lent_books_details = cursor.fetchall()
-
-        return lent_books_details
+        if lent_books_details:
+            return lent_books_details
+        else:
+            return "No books lent yet, or there must be an error, kindly check the database manually!"
 
     except Exception as e:
         print(e)
     finally:
         connection.close()
 
-
-return_book("9780439682589",'22AM112')
